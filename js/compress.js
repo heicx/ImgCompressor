@@ -16,6 +16,7 @@
 		p.init = function() {
 			if(p.container) {
 				p.container.change(function(e) {
+					// alert(p.container[0].files.length);
 					p.imgHandle(e.target.files);
 				});
 			}
@@ -26,27 +27,37 @@
 
 	ImgCompressor.prototype.imgHandle = function(files) {
 		var i = 0, temp_arr = [];
+		var cvs = $("<canvas id='img_canvas'></canvas>")[0];
+		var that = this;
+		var blob_url = null;
 
+		alert(files.length);
 		for(i; i<files.length; i++) {
-			temp_arr.push(this.url.createObjectURL(files[i]));
-		}
-		this.create(temp_arr);
-	}
+			blob_url = this.url.createObjectURL(files[i])
+			temp_arr.push(blob_url);
 
-	ImgCompressor.prototype.create = function(arr) {
-		var canvas = $("<canvas id='img_canvas'></canvas>")[0];
-		
-		for(var i = 0; i < arr.length; i++) {
-			this.src = this.tempImg(arr[i], function(data) {
-				console.log(data);
+			this.build(temp_arr[i], function(info) {
+				// that.url.revokeObjectURL(blob_url);
+				var width = info.width;
+				var height = info.height;
+
+				var context = cvs.getContext("2d");
+				cvs.width = width;
+				cvs.height = height;
+				context.drawImage(info, 0, 0, width, height);
+				var url = cvs.toDataURL("image/jpeg", 3);
+				
+				$("#imgPreview").attr("src", url);
 			});
 		}
+
+		cvs.remove();
 	}
 
-	ImgCompressor.prototype.tempImg = function(url, callback) {
+	ImgCompressor.prototype.build = function(url, callback) {
 		var img = new Image();
 		img.onload = function() {
-			callback(img);
+			callback(this);
 		}
 		img.src = url;
 	}
