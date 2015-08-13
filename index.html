@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0">
+<meta content="yes" name="apple-mobile-web-app-capable">
+<meta content="telephone=no" name="format-detection">
+<meta content="false" id="twcClient" name="twcClient">
+<title></title>
+<script type="text/javascript" src="js/libs/jquery.js"></script>
+<script type="text/javascript" src="js/exif.js"></script>
+<script type="text/javascript" src="js/compress.js"></script>
+
+<script type="text/javascript">
+	$(function(){
+		var photo = new ImgCompressor("#photoFile");
+	})
+	
+</script>
+
+<script type="text/javascript">
+  	$(function() {
+  		// $("#photoFile").change(function(e) {
+  		// 	console.log(new Date().getTime());
+  		// 	photoHandle(e.target.files[0]);
+  		// 	// var url = window.URL.createObjectURL($(this)[0].files[0]);
+  		// 	// console.log(url);
+  		// 	// $("#imgPreview").attr("src", url);
+  		// });
+  	})
+
+  	var photoHandle = function(param) {
+  		if(param) {
+  			EXIF.getData(param, function() {
+  				console.log(EXIF.getTag(this, "Orientation"));
+
+	  			window.URL = window.URL || window.webkitURL;
+	  			var url = window.URL.createObjectURL(param);
+	  			var canvas = $("<canvas id='img_canvas'></canvas>")[0];
+	  			var img = new Image();
+
+	  			img.onload = function() {
+	  				var width = this.width;
+	  				var height = this.height;
+
+	  				var ctx = canvas.getContext("2d");
+	  				canvas.width = width;
+	  				canvas.height = height;
+	  				ctx.drawImage(img, 0, 0, width, height);
+	  				var base64 = canvas.toDataURL("image/jpeg", 3);
+	  				canvas.remove();
+
+	  				console.log(base64);
+	  				console.log(new Date().getTime());
+	  				$("#imgPreview").attr("src", base64);
+	  			}
+
+	  			img.src = url;
+	  		});
+  		}
+  	}
+</script>
+</head>
+<body>
+	<input type="file" multiple id="photoFile" />
+	<img src="" id="imgPreview" width="480" height="320" style="border:none;" />
+</body>
+</html>
