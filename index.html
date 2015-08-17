@@ -13,7 +13,12 @@
 
 <script type="text/javascript">
 	$(function(){
-		var photo = new ImgCompressor("#photoFile");
+		var photo = new ImgCompressor("#photoFile", {
+			"preview": "#imgPreview",
+			"callback": function(data) {
+				console.log(data.images);
+			}
+		});
 	})
 	
 </script>
@@ -62,7 +67,7 @@
 </script>
 </head>
 <body>
-	<input type="file" multiple id="photoFile" />
+	<input type="file" multiple="multiple" id="photoFile"  accept="image/*" />
 	<img src="" id="imgPreview" width="480" height="320" style="border:none;" />
 </body>
 </html>
