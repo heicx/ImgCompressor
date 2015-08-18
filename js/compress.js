@@ -33,14 +33,14 @@
 		that.each(that.files[0], that.callback);
 	}
 
-	ImgCompressor.prototype.callback = function(url, that) {
-		if((that.count + 1) === (that.files.length)) {
-			that.arr.push(url);
-			that.send(that.arr);
-			that.arr = [];
+	ImgCompressor.prototype.callback = function(url) {
+		this.arr.push(url);
+
+		if((this.count + 1) === (this.files.length)) {
+			this.send(this.arr);
+			this.arr = [];
 		}else {
-			that.arr.push(url);
-			that.each(that.files[that.count++], that.callback);
+			this.each(this.files[this.count++], this.callback);
 		}
 	}
 
@@ -64,7 +64,7 @@
 			
 			var timer = setInterval(function() {
 				if(url !== null) {
-					callback(url, that);
+					callback.call(that, url);
 					clearInterval(timer);
 				}
 			}, 1000);

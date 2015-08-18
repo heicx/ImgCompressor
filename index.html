@@ -16,7 +16,8 @@
 		var photo = new ImgCompressor("#photoFile", {
 			"preview": "#imgPreview",
 			"callback": function(data) {
-				console.log(data.images);
+				$("#imgPreview").attr("src", data.images[0]);
+				
 			}
 		});
 	})
